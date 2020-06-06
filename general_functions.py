@@ -10,7 +10,7 @@ import dask.array as da
 import dask as dk
 dk.config.set(scheduler='processes')
 
-from dask_image.ndfilters import generic_filter as d_gf
+#from dask_image.ndfilters import generic_filter as d_gf
 
 from collections import deque
 
@@ -157,7 +157,7 @@ def create_balanced_dataset(list_of_zones):
     frames = np.empty(len(list_of_zones), dtype=object)
     for i, zone_file_name in enumerate(list_of_zones):
         zone = pd.read_pickle(zone_file_name)
-        mask = masks[i] 
+        #mask = masks[i] 
         
         mask = create_balanced_mask(zone["label_3m"].values.reshape((2997,2620)), 3, 5)
         
