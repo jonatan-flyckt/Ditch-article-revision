@@ -48,6 +48,7 @@ from numba import prange
 
 from Functions import general_functions
 from Functions import feature_creation
+from Functions.feature_creation import _create_conic_mask
 
 @jit(nopython=True)
 def raster_to_zones(arr, zoneSize, threshold):

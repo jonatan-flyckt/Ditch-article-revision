@@ -47,6 +47,8 @@ from numba import jit
 from numba import prange
 
 from Functions import general_functions
+from Functions.feature_creation import _create_conic_mask
+
 
 @jit(nopython=True)
 def raster_to_zones(arr, zoneSize, threshold):
@@ -327,7 +329,7 @@ def conic_proba_post_processing(arr, maskRadius, threshold):
     masks = []
     maxArr = d_gf(da.from_array(arr,chunks = (800,800)), np.nanmax, footprint=general_functions.create_circular_mask(5))
     for i in range(0, 8):
-        masks.append(create_conic_mask(maskRadius, i))
+        masks.append(_create_conic_mask(maskRadius, i))
 
     return _conic_proba_post_processing(np.array(arr), np.array(maxArr), np.array(masks),threshold)
     
