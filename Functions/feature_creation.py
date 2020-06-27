@@ -47,7 +47,7 @@ from numba import jit
 from numba import prange
 
 
-import general_functions
+from . import general_functions
 
 
 def dem_ditch_detection(arr):
