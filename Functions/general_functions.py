@@ -126,7 +126,7 @@ def create_balanced_mask(ditchArr, height, width):
     """
     Creates a mask from a labeled zone to balance the ditch and non-ditch classes more.
     """
-    random.seed(89)
+    random.seed(42)
     new_arr = ditchArr.copy()
     for i in range(0, len(ditchArr), height):
         for j in range(0, len(ditchArr[i]), width):
