@@ -22,10 +22,13 @@
 
 
 
-
-
-
-
+% Ploting
+\usepackage{pgfplots}
+\pgfplotsset{width=7cm,compat=1.8}
+\definecolor{custombeige}{HTML}{e0d4ba}
+\definecolor{custombeigeouter}{HTML}{968f7e}
+\definecolor{customgray}{HTML}{666666}
+\definecolor{customgrayouter}{HTML}{404040}
 
 %-------------------
 
@@ -96,6 +99,9 @@ We hypothesise that by combining the information from all the digital terrain in
 
 \section{Materials and method}
 \label{method}
+
+\subsection{The need for better small scale channel mappings}
+To investigate the need for better maps of ditches and small stream channels we compared the data from a national field survey with available maps. The National Inventory of Landscapes in Sweden (NILS) has recorded small watercourses (width $<$ 6 m) by conducting a line inventory in 631 $5*5$ km squares randomly distributed in Sweden, to best capture a representative and varied sample of the Swedish landscape. The position of the small watercourses from this inventory were compared with the watercourses on Swedish Property Map (1: 12 500) (allowing for an uncertainty in the positioning of up to 15 m, by snapping the point observations to the lines on the map) (\hyperref[fig:watercoursebarplot]{Figure} \ref{fig:watercoursebarplot}).
 
 \subsection{Study area}
 Several other studies \citep{roelens, bailly, rapinel, kiss} that have located ditches from LiDAR data have worked on smaller areas (smaller than 2 $km^2$) where artificial drainage dominates. Here, we work on landscape scale in a mesoscale catchment. The  Krycklan Study Catchment in Sweden is 68 $km^2$, which means that we cover more landscape types. The quaternary deposits are dominated by till (51\%) and sorted sediments (30\%). The catchment ranges in elevation from 114 to 405 m above sea level. Forest covers 87\% of the catchment, mires 9\%, thin soils 7\%, and rock outcrops 1\%. The land use is dominated by forestry; approximately 25\% of the Krycklan catchment has been protected since 1922, but most of the other area is second growth forest \citep{krycklancatchment}. 
@@ -344,6 +350,8 @@ To circumvent some of the performance evaluation issues arising from the use of 
 
 \section{Results and analysis}
 
+
+
 \hyperref[recreatedpredictionperformance]{Table} \ref{recreatedpredictionperformance} shows the evaluation metrics from the experiments with the digital terrain indices separately. Of the four, the Impoundment Index and the HPMF index performed relatively close to each other and outperformed the other indices for most of the metrics.
 
 \begin{table}[!htb]
@@ -403,6 +411,41 @@ The $\kappa$ rating for our method can be seen in the \textit{Total} column in \
 \end{figure}
 \clearpage
 
+A total of 1103 natural watercourses, 131 straightened watercourses/channels, and 2089 ditches were found in NILS field inventory. Analysing the data from NILS, two things are striking: Firstly, the ditches make up the majority of the small scale water channels in the Swedish landscape; almost twice as many as the natural streams. Secondly, most of the small scale channels are missing on the current maps; only 45 \% of the natural watercourses, 25 \% of the straightened watercourses/channels, and 9 \% of the ditches were mapped (\hyperref[fig:watercoursebarplot]{Figure} \ref{fig:watercoursebarplot}).
+
+\begin{figure}[htb]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width={0.9\textwidth},
+        height={0.6\textwidth},
+        ylabel={fluorescence},
+        ybar stacked,
+        ymajorgrids=true,
+    	bar width=45pt,
+    	nodes near coords,
+    	every node near coord/.append style={font=\tiny},
+        enlarge y limits={0.15},
+        enlarge x limits=0.15,
+        legend style={at={(0.78,0.96)},
+          anchor=north,legend columns=-1},
+        ylabel={{}},
+        symbolic x coords={Ditches, Straightened  watercourses, Natural  watercourses},
+        xtick=data,
+        ytick={0,500,1000,1500,2000},
+        x tick label style={rotate=0,anchor=north},
+        ]
+    \addplot+[ybar,color=custombeige,fill=custombeige,draw=custombeigeouter,thick] plot coordinates {(Ditches,188) (Straightened  watercourses,33) 
+      (Natural  watercourses,496)};
+    \addplot+[ybar,color=customgrayouter,fill=customgray,draw=customgrayouter,thick] plot coordinates {(Ditches,1901) (Straightened  watercourses,98) 
+      (Natural  watercourses,607)};
+    \legend{\strut Mapped, \strut Unmapped}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{The bars indicate the number of observed channels in the National Inventory of Landscapes in Sweden's (NILS) line inventory of small watercourses (width $<$ 6 m). The colours of the bars indicate if they are mapped or not on the Swedish Property map.}
+    \label{fig:watercoursebarplot}
+\end{figure}
+
 In \hyperref[featureimportancetable]{Table} \ref{featureimportancetable}, the top 20 input variables from the Random Forests models are presented with their importance percentages for the models making a successful prediction. From the table, it can be seen that input variables based on HPMF and Impoundment Index contributed the most to a successful prediction. The Gini importance was obtained using the Gini impurity for each variable \citep{gini}.
 
 \begin{table} [!htb]
@@ -438,7 +481,7 @@ In \hyperref[featureimportancetable]{Table} \ref{featureimportancetable}, the to
 
 \section{Discussion}
 
-In our study we have shown that it is possible to locate ditches automatically in high-resolution DEMs ($0.5  * 0.5 $ metres, in our case), and that more of the ditches can be detected if the information from several terrain indices (\hyperref[recreatedpredictionperformance]{Table} \ref{recreatedpredictionperformance}) is combined through machine learning than if indices are used separately (\hyperref[predictionperformance]{Table} \ref{predictionperformance}).
+The comparison with the field observed channels and the available maps clearly indicate the need for better maps of ditches (\hyperref[fig:watercoursebarplot]{Figure} \ref{fig:watercoursebarplot}). Our study has shown that it is possible to locate ditches automatically in high-resolution DEMs ($0.5  * 0.5 $ metres, in our case), and that more of the ditches can be detected if the information from several terrain indices (\hyperref[recreatedpredictionperformance]{Table} \ref{recreatedpredictionperformance}) is combined through machine learning than if indices are used separately (\hyperref[predictionperformance]{Table} \ref{predictionperformance}).
 The difficulty of detecting the ditches in the study catchment vary greatly from ditch to ditch, this is illustrated in \hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures}.
 By separating the road ditches from the other ditches, a comparison showed that the retrieval rate was slightly higher for the road ditches. This is likely due to the fact that they are found in open areas alongside roads, and also that road ditches have generally been better maintained as it has been more prioritised to keep these ditches functioning (\hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures} \hyperref[fig:ditchpictures]{a}). However, most of the ditches in Krycklan today are found below the canopy (e.g. \hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures} \hyperref[fig:ditchpictures]{c}), and the majority have not been maintained, causing difficulties in detecting them as some have grow back in. This, in combination with the surrounding peat having subsided \citep{heikurainen}, have rendered them almost impossible to detect in the DEM today (\hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures} \hyperref[fig:ditchpictures]{d}). Despite these issues we had a recall rate of 70.28\%, showing that the majority of the ditches could still be retrieved automatically.
 
@@ -473,6 +516,8 @@ Hypothetically, it should be quite easy to detect ditches using LiDAR data. In p
     \label{fig:resultstreesbushes}
 \end{figure}
 
+With our method, natural streams were often classified as false positives (\hyperref[fig:resultsillustrations]{Figure} \ref{fig:resultsillustrations} \hyperref[fig:resultsillustrations]{b}) as our aim was focused on locating ditches. However, this indicates that our method could also be used to map small, previously unmapped natural stream channels. A major knowledge gap, both nationally  \citep{kuglerova} and internationally \citep{benstead} is how to best identify the location of small brooks and creeks in the landscape - a phenomenon called “Aqua Incognita, the unknown headwaters” \citep{bishop, kuglerova}.
+
 The results from our method (\hyperref[predictionperformance]{Table} \ref{predictionperformance}) show that we managed to attain a Cohen's $\kappa$ rating in the substantial range, according to performance thresholds proposed by \citet{kappaanalysis}. This means that our ditch detector performed substantially better than a completely random ditch detector. The total recall value of 70.28 \% shows that we managed to find a majority of the ditch pixels that exist. The results of our method also showed a significant improvement for ditch detection over classifying with the digital terrain indices separately. Had we been able to use labels that were correctly labelled on a pixel basis, i.e. each ditch had its actual width recorded, the models could have learned with a better accuracy in the training phase, and the classification results would also most likely have benefitted from this.
 
 Sometimes pixels in ditches were initially identified correctly as ditch pixels, but because not enough pixels in the surrounding area were detected, the post-processing algorithms identified them as noise and removed them. Incorrectly classified ditch pixels that caused the precision to decrease were generally the pixels that lay in streams (\hyperref[fig:resultsillustrations]{Figure} \ref{fig:resultsillustrations} \hyperref[fig:resultsillustrations]{a, b}). However, small sinks or hilly areas incorrectly classified as ditches by the Random Forests models were generally removed in the post-processing. We managed to bridge gaps and exclude streams to some extent in our predictions. This was in part due to the post-processing of the prediction helping where the models were unsuccessful on their own, and in part due to the input variables developed. \hyperref[featureimportancetable]{Table} \ref{featureimportancetable} highlights the importance of the input variables that were developed by applying different statistical aggregations for neighbouring areas of pixels, similar to \citet{roelens}, as well as the custom variables using filters such as the Impoundment stream removal or Gabor filters.
@@ -484,10 +529,6 @@ Sometimes pixels in ditches were initially identified correctly as ditch pixels,
 The hydrology of our study catchment also differs from the other mentioned studies as there are almost as many natural stream channels as there are ditches in the area \citep{hasselquist, mappingtemporal}. Other studies were conducted in smaller, predominately artificially drained areas \citep{roelens, bailly, rapinel}. Our method locates both artificial channels (ditches) and natural stream channels. This would not be a problem if the aim had been to locate all channels. However, our study focused on locating ditches specifically. Hence, we tried to remove the natural stream channels by manipulating some of the input variables, using the Impoundment Index to lower the values of pixels that had a high dam height, as explained in \ref{impoundmentstreamremoval}. This helped to remove the deepest streams and increased the overall accuracy, with the drawback of decreasing the recall slightly (\hyperref[fig:resultsillustrations]{Figure} \ref{fig:resultsillustrations} \hyperref[fig:resultsillustrations]{f}). This method did not remove the smaller streams (\hyperref[fig:resultsillustrations]{Figure} \ref{fig:resultsillustrations} \hyperref[fig:resultsillustrations]{b}). A future improvement to the ditch detector could be to use a shape index to remove small natural streams, as natural streams often form more complex channels whereas ditches are often straight. A potential issue with generalising our ditch detector for use in other geographical areas is that all the post-processing steps and input variables were developed based on occurrences in the Krycklan area. Different geographical compositions in other areas may require that the thresholds used to fill gaps in ditches and to remove noise would need to be adjusted.
 
 \section{Conclusion}
-
-%This study investigates how to use digital elevation data together with manually labelled ditches to identify patterns and relationships that can be used for automatic ditch detection. The proposed method significantly outperforms classifying with the digital terrain indices separately. Although the method still has room for improvement, it performs well on the available data. In the future, a more extensive hyperparameter tuning could be performed, because, as \citet{lavesson} states; hyperparameter tuning is often more important than choice of algorithm. Some of the custom input variables could be reused in the future, with Random Forests or other machine learning algorithms. Several of the post-processing algorithms, such as the probability prediction noise removal or the cluster removal from the binary prediction could be generalised for use in any type of pixel classification of ditches.
-
-%The work in this study gives an insight into what input variables work well for ditch detection and what input variables do not, as well as an increased understanding of how machine learning can be applied to ditch detection. The proposed method may help in making ditch detection both faster and easier, reducing manual labour and cost. In conclusion, this study has shown that it is possible to use machine learning with digital elevation models to learn patterns that enable robust detection of ditches.
 
 This study investigates how to use digital elevation data together with manually labelled ditches to identify patterns and relationships that can be used for automatic ditch detection. Although the method still has room for improvement, it performs well on the available data, and significantly outperforms classifying with the digital terrain indices separately. Future work could introduce more input variables and post-processing steps, such as using pathfinding algorithms to fill gaps in the ditch model, or shape indices to remove stream channels from the prediction. Moving towards image segmentation with grids of pixels instead of pixel classification of tabular pixel values could be a suitable future approach.
 
