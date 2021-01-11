@@ -111,13 +111,15 @@ We hypothesise that by combining the information from all the digital terrain in
 \subsection{The need for better small scale channel mappings}
 To investigate the need for better maps of ditches and small stream channels we compared the data from a national field survey with available maps. The National Inventory of Landscapes in Sweden (NILS) has recorded small watercourses (width $<$ 6 m) by conducting a line inventory in 631 $5*5$ km squares randomly distributed in Sweden, to best capture a representative and varied sample of the Swedish landscape. The positions of the small watercourses from this inventory were compared with the watercourses on Swedish Property Map (1: 12 500) (allowing for an uncertainty in the positioning of up to 15 m, by snapping the point observations to the lines on the map) (\hyperref[fig:watercoursebarplot]{Figure} \ref{fig:watercoursebarplot}).
 
-\subsection{Study area}
+\subsection{Study area and data}
 In the Krycklan Study Catchment the quaternary deposits are dominated by till (51\%) and sorted sediments (30\%). The catchment ranges in elevation from 114 to 405 m above sea level. Forest covers 87\% of the catchment, mires 9\%, thin soils 7\%, and rock outcrops 1\%. The land use is dominated by forestry; approximately 25\% of the Krycklan catchment has been protected since 1922, but  the rest of the area is mostly second growth forest \citep{krycklancatchment}. 
 
 A historical survey of the catchment (Gudrun Norstedt, unpublished) recorded  that the ditches in the catchment were dug between 1900 and 1993. Initially, the ditches were dug to drain the mires for hay production. Later on, wet areas were drained to attempt to turn them into productive forest lands \citep{paivanen}. However, research later showed that many of the drained mires were not productive for forestry due to lack of nutrients \citep{sikstrom}.
 
+The LiDAR dataset used in this study was produced by TerraTec Sweden AB in August 2015, on demand of the Department of Forest Resource Management at the Swedish University of Agricultural Sciences, and is freely available online \citep{dataset}. The average density of the dataset was 20 pulses per $m^2$.  Ground point classification was performed with lasground (included in LAStools, a software suite produced by rapidlasso GmbH). The DEM was created with blast2dem (included in LAStools), with a cell size of $0.5*0.5$ m. Only ground points were imported to generate a DEM of the ground.
+
 \subsection{Digitising the ground truth}
-A high resolution DEM was generated from LiDAR data, see \hyperref[lidartodem]{'Data and codes availability statement'}. To train and validate the machine learning models, a vector layer of all ditches in the Krycklan Catchment \citep{krycklancatchment} was digitised. The study catchment comprises several types of ditches including road ditches, forest ditches, and agricultural ditches. A multidirectional hillshade of the 0.5 m DEM was calculated in ArcGIS Pro to locate the ditches. From this layer, most of the ditches could be easily identified. We conducted the digitisation at a scale of 1:600 to ensure all the digitised ditches properly align the actual ditch on the ground and do not coincide with the edge of the banks. In addition, both current and historical records and orthophotos dating back to the 1960's were consulted to help locate all the ditches. In uncertain areas, the ditches were verified in the field. The stream network in \hyperref[fig:swedenkrycklan]{Figure} \ref{fig:swedenkrycklan} shows a network with a 8 hectare flow initiation threshold. The digitisation of the ditch networks showed that there are 107 km of road ditches and 208 km of forest/agricultural ditches in the catchment (\hyperref[fig:swedenkrycklan]{Figure} \ref{fig:swedenkrycklan}). The stream network in \hyperref[fig:swedenkrycklan]{Figure} \ref{fig:swedenkrycklan}, which represents median flow conditions, was 197 km.
+To train and validate the machine learning models, a vector layer of all ditches in the Krycklan Catchment \citep{krycklancatchment} was digitised. The study catchment comprises several types of ditches including road ditches, forest ditches, and agricultural ditches. A multidirectional hillshade of the 0.5 m DEM was calculated in ArcGIS Pro to locate the ditches. From this layer, most of the ditches could be easily identified. We conducted the digitisation at a scale of 1:600 to ensure all the digitised ditches properly align the actual ditch on the ground and do not coincide with the edge of the banks. In addition, both current and historical records and orthophotos dating back to the 1960's were consulted to help locate all the ditches. In uncertain areas, the ditches were verified in the field. The stream network in \hyperref[fig:swedenkrycklan]{Figure} \ref{fig:swedenkrycklan} shows a network with a 8 hectare flow initiation threshold. The digitisation of the ditch networks showed that there are 107 km of road ditches and 208 km of forest/agricultural ditches in the catchment (\hyperref[fig:swedenkrycklan]{Figure} \ref{fig:swedenkrycklan}). The stream network in \hyperref[fig:swedenkrycklan]{Figure} \ref{fig:swedenkrycklan}, which represents median flow conditions, was 197 km.
 
 \begin{figure}[!htb]
     \centering
@@ -219,7 +221,7 @@ Using the 11 subsections in the hold-out data for the final experiment, a proces
 
 Random Forests is an ensemble machine learning method which builds multiple diverse decision trees to increase the robustness of its predictions \citep{breiman,flach}. The individual trees are trained by minimising the entropy of the data from each node’s output \citep{kotsiantis}. A byproduct of the training is the Gini importance, which denotes the most important input variables \citep{gini}. For our study, a hyperparameter tuning showed that using 300 trees and \textit{gini} as the splitting criterion, with a minimum of 10 samples per node split, and no artificial class weight or max depth of trees yielded the best predictions. The Random Forests algorithm from the Python library \textit{scikit-learn} \citep{scikit-learn} was used in the experiment, and the classifiers were trained on all the input variables seen in \hyperref[featuretable]{Table} \ref{featuretable}.
 
-\begin{table} [!htb]
+\begin{table} [H]
 \centering
     %\tbl{The 40 input variables used when training the models.}
     {\begin{tabular}{l|l} %\toprule
@@ -386,7 +388,7 @@ In the national survey (NILS), a total of 1103 natural watercourses, 131 straigh
 
 \hyperref[recreatedpredictionperformance]{Table} \ref{recreatedpredictionperformance} shows the evaluation metrics from the experiments with the digital terrain indices separately. Of the four, the Impoundment Index and the HPMF index performed relatively close to each other and outperformed the other indices for most of the metrics.
 
-\begin{table}[!htb]
+\begin{table}[H]
 \centering
     {\begin{tabular}{l|cccc} %\toprule
         \textbf{Metric} & \textbf{Sky View Factor} & \textbf{Impoundment} & \textbf{HPMF} & \textbf{Slope}\\ %\midrule
@@ -406,7 +408,7 @@ In the national survey (NILS), a total of 1103 natural watercourses, 131 straigh
 
 From \hyperref[predictionperformance]{Table} \ref{predictionperformance}, it is observed that averaging the results from the 11 subsections would yield a very similar value to the total results, indicating that the ditch detector generally performs equally well on subsections with a small amount of ditches as on subsections with a large amount of ditches.
 
-\begin{table}[!htb]
+\begin{table}[H]
 \centering
     {\begin{tabular}{l|ccc}
         \textbf{Metric} & \textbf{Total}\textsuperscript{a} & \textbf{Subsection Average}\textsuperscript{b}& \textbf{CI 95\%}\textsuperscript{c} \\ 
@@ -428,7 +430,7 @@ From \hyperref[predictionperformance]{Table} \ref{predictionperformance}, it is 
 
 The $\kappa$ rating for our method can be seen in the \textit{Total} column in \hyperref[predictionperformance]{Table} \ref{predictionperformance} ($\kappa$ = 0.732). The $\kappa$ ratings from the four digital terrain indices experiments can be seen in  \hyperref[recreatedpredictionperformance]{Table} \ref{recreatedpredictionperformance} ($\kappa$ = 0.048, $\kappa$ = 0.215, $\kappa$ = 0.211, $\kappa$ = 0.029). Because the $\kappa$ rating from our method outperforms all digital terrain indices, our hypothesis that combining digital terrain indices with a machine learning produces better ditch detection than using single terrain indices has been confirmed by the experiments. Most false positives lie in stream channels (\hyperref[fig:resultsillustrations]{Figure} \ref{fig:resultsillustrations} \hyperref[fig:resultsillustrations]{a, b}) and most false negatives occurred either due to ditches being too shallow (\hyperref[fig:resultsillustrations]{Figure} \ref{fig:resultsillustrations} \hyperref[fig:resultsillustrations]{c, d}), or due to the attempt at removing streams using the input variables as explained in \ref{impoundmentstreamremoval} removing the deepest ditches  (\hyperref[fig:resultsillustrations]{Figure} \ref{fig:resultsillustrations} \hyperref[fig:resultsillustrations]{e, f}).
 
-\begin{figure} [!htb]
+\begin{figure} [H]
     a{
         \resizebox*{4cm}{!}{\includegraphics{./images/results_illustration_1_lo.jpg}}}\hspace{5pt}
     b{
@@ -476,6 +478,7 @@ In \hyperref[featureimportancetable]{Table} \ref{featureimportancetable}, the to
         \caption{The top 20 input variables (out of 40) by importance when the models make a prediction. \newline \textsuperscript{a} The number next to some of the variables indicates the circular radius used to select what neighbouring pixels to use in the statistical aggregation method. The radii represents pixels with a 0.5 m resolution.}
     \label{featureimportancetable}
 \end{table}
+\clearpage
 
 \section{Discussion}
 
@@ -483,7 +486,7 @@ The comparison with the field observed channels and the available maps clearly i
 The ditch detection performance varied depending on the type of ditches, this is illustrated in \hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures}. For example, the retrieval rate was slightly higher for the road ditches compared to forest or agricultural ditches. This is likely due to the fact that  road ditches are found in open areas alongside roads, and also,   they are generally well maintained for optimum functioning (\hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures} \hyperref[fig:ditchpictures]{a}). However, most of the ditches in Krycklan today are found below the canopy (e.g. \hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures} \hyperref[fig:ditchpictures]{c}), and the majority have not been maintained, causing difficulties in detecting them as some have grown back in with peat, grasses, or shrubs (\hyperref[fig:resultstreesbushes]{Figure} \ref{fig:resultstreesbushes} \hyperref[fig:resultstreesbushes]{b}). This, in combination with the surrounding peat having subsided \citep{heikurainen}, have rendered them almost impossible to detect in the DEM today (\hyperref[fig:ditchpictures]{Figure} \ref{fig:ditchpictures} \hyperref[fig:ditchpictures]{d}). Despite these issues we had a recall rate of 70.28\%, showing that the majority of the ditches could still be retrieved automatically.
 
 
-\begin{figure} [!htb]
+\begin{figure} [H]
     a{
         \resizebox*{5.5cm}{!}{\includegraphics{./images/road_ditch_lo.jpg}}}\hspace{7pt}
     b{
@@ -498,7 +501,7 @@ The ditch detection performance varied depending on the type of ditches, this is
 
 Hypothetically, it should be quite easy to detect ditches using LiDAR data. In practice, however, there are many variables affecting the results, such as the point density and the interpolation method used to create the DEM. \citet{rapinel} found that the results were usually more sensitive to the point density (ranging 1-4 points $m^{2}$ in their study) than the interpolation method. They retrieved 54.8 and 63.8 \% of the ditches on the Acuey and Boucey marches in France, compared to 70.28 \% in our study. However, in our study we had a point density of 20 points $m^{2}$, so the quality of the DEM in our study ought to be robust, which may have contributed to our higher retrieval rate. \hyperref[fig:resultstreesbushes]{Figure} \ref{fig:resultstreesbushes} \hyperref[fig:resultstreesbushes]{(a, b)} illustrates the difference in the quality of the LiDAR data where the laser pulses have caught in trees or shrubs. When too few LiDAR points reach the ground, the DEM generation is forced to interpolate over a larger area, leading to inaccuracies in the ground DEM.
 
-\begin{figure} [!htb]
+\begin{figure}[H]
     a{
         \resizebox*{5.5cm}{!}{\includegraphics{./images/results_trees_bushes_1_lo.jpg}}}\hspace{7pt}
     b{
@@ -529,8 +532,14 @@ Detection of artificial ditches over large areas with substantial natural stream
 
 Although there is room for further improvement, the methodology is a significant step forward as it performed on a par with previous studies conducted in more homogeneous agricultural landscapes. Our approach enables accurate ditch detection in complex forested landscapes with tree canopy and many natural streams. Future work could introduce more input variables and post-processing steps, such as using pathfinding algorithms to fill gaps in the ditch model or shape indices to remove stream channels from the prediction. Moving towards image segmentation instead of pixel classification of tabular pixel values could also be a suitable future approach. Our developed methodology can be adjusted to apply to any setting for artificial ditch detection, reducing time and labour investment compared to the conventional manual mapping techniques. The accurate ditch maps can significantly contribute to practical forestry and operational land management at a landscape-scale.
 
+\section*{CRediT authorship contribution statement}
+Jag tolkar det som att denna sektion är frivillig. De flesta artiklar jag har hittat listar här vad alla enskilda författare har bidragit med.
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
 \section*{Acknowledgements}
-We wish to thank Dr. Siddhartho Paul at the Swedish University of Agricultural Sciences, whose suggestions helped improve and clarify this manuscript. We also thank Sigurd Israelsson at the School of Engineering at J\"onk\"oping University for lending hardware resources for the experiments in this study. The work has been funded by VINNOVA, EU InterReg Baltic Sea project WAMBAF tools and Formas.
+We wish to thank Dr. Siddhartho Paul at the Swedish University of Agricultural Sciences, whose suggestions helped improve and clarify this manuscript. We also thank Sigurd Israelsson at the School of Engineering at J\"onk\"oping University for lending hardware resources for the experiments in this study. This work was supported by VINNOVA, EU InterReg Baltic Sea project WAMBAF tools and Formas. \textbf{Här ska varje grant definieras med "grant number[xxxx] efter varje aktör"}
 
 
 \bibliography{references}
