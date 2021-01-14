@@ -161,7 +161,7 @@ The National Inventory of Landscapes in Sweden (NILS) has recorded small waterco
 
 Several previous studies have located ditches from Light Detection and Ranging (LiDAR) data in smaller agricultural areas \citep{roelens, bailly} or smaller forest areas (smaller than 2 $km^2$) \citep{rapinel, kiss}, predominantly characterised by artificial drainage. In this study, however, we conduct a landscape-scale analysis in a mesoscale catchment. The study  catchment  is 68 $km^2$, representing diverse landscape features and geomorphological characteristics. Additionally, the forest landscape introduces many challenges that are not present when detecting ditches along roads or in agricultural areas. The canopy cover in forest areas prevents the use of satellite imagery or aerial photos, as well as lowers the quality of the digital elevation models (DEMs), as fewer LiDAR points reach the ground, instead frequently catching in trees, bushes, or grass. Forest ditches are also generally not maintained to the same extent as agricultural or road ditches, often being overgrown or covered by windthrows or windsnaps. Previous studies have found that terrain indices such as Sky View Factor \citep{zaksek}, Impoundment Index \citep{whiteboxtools} and High Pass Median Filter \citep{whiteboxtools} can detect ditches in some cases \citep{uppsala}. However, different false positives and negatives can be observed when examining each terrain index manually. These inaccuracies can stem either from the gaps in the LiDAR scans, or from a poorly set threshold for the terrain index parameters. Thus, it would be useful to combine these LiDAR derived terrain indices to prune the weaknesses, and amplify the strengths of each index and produce highly accurate detection of ditch networks. 
 
-In this study, we introduce a new method for the automated mapping of ditches by integrating multiple high resolution terrain indices using a supervised learning approach. We hypothesise that by combining the information from all the digital terrain indices using a machine learner (Random Forests), we can improve the detection of the ditches, compared to if a single terrain index is used. To test this, we conduct a landscape-scale ditch detection analysis at the Krycklan Catchment in Sweden \citep{krycklancatchment}, where a high precision manual mapping has been performed previously. This manual mapping guided the model training and ground-truthing in our analysis and provided a test-bench for our methodology.
+In this study, we introduce a new method for the automated mapping of ditches by integrating multiple high resolution terrain indices using a supervised learning approach. Several features and post-processing steps, specifically tailored for ditch detection are also developed and employed. We hypothesise that by combining the information from all the digital terrain indices using a machine learner (Random Forests), we can improve the detection of the ditches, compared to if a single terrain index is used. To test this, we conduct a landscape-scale ditch detection analysis at the Krycklan Catchment in Sweden \citep{krycklancatchment}, where a high precision manual mapping has been performed previously. This manual mapping guided the model training and ground-truthing in our analysis and provided a test-bench for our methodology.
 
 \section{Materials and method}
 \label{method}
@@ -386,9 +386,9 @@ To circumvent some of the performance evaluation issues arising from the use of 
 \begin{figure} [!htb]
     \centering
     a{
-        \resizebox*{5.6cm}{!}{\includegraphics{./images/re_evaluation_1_lo.jpg}}}\hspace{5pt}
+        \resizebox*{6.5cm}{!}{\includegraphics{./images/re_evaluation_1_lo.jpg}}}\hspace{5pt}
     b{
-        \resizebox*{5.6cm}{!}{\includegraphics{./images/re_evaluation_2_lo.jpg}}}
+        \resizebox*{6.5cm}{!}{\includegraphics{./images/re_evaluation_2_lo.jpg}}}
     \caption{Illustration of the modified evaluation labels. Green marks true positives, red marks false negatives, and blue marks false positives. False positives and false negatives that lay within one grid zone (9 $m^2$) of a ditch label were evaluated as true positives and true negatives. \textbf{a:} Original results, \textbf{b:} Modified results. }
     \label{fig:newlabels}
 \end{figure}
@@ -399,29 +399,26 @@ To circumvent some of the performance evaluation issues arising from the use of 
 
 \begin{table}[!htb]
 \centering
-    {\begin{tabular}{l|cccc} %\toprule
-        \textbf{Metric} & \textbf{Sky View Factor} & \textbf{Impoundment} & \textbf{HPMF} & \textbf{Slope}\\ %\midrule
+    {\begin{tabular}{l|cccc}
+        \textbf{Metric} & \textbf{Sky View Factor} & \textbf{Impoundment} & \textbf{HPMF} & \textbf{Slope}\\
         \hline
         Accuracy \%     & 83.67 & 97.07 & 97.45 & 82.66 \\
         Recall \%       & 44.54 & 29.98 & 25.31 & 34.83 \\
         Precision \%    &{ 4.00}  & 18.51 & 20.10 & { 2.99} \\
         $\kappa$ rating & 0.048 & 0.215 & 0.211 & 0.029 \\
-        AUPRC & 0.247 & 0.248 & 0.232 & 0.194 \\ %\bottomrule
+        AUPRC & 0.247 & 0.248 & 0.232 & 0.194 \\
         \hline
     \end{tabular}}
-    \caption{Metrics from the total results of the four digital terrain indices experiments.}
+    \caption{Metrics from the total results of the four digital terrain indices experiments, where only a sole terrain index is used with a threshold to detect ditches.}
     \label{recreatedpredictionperformance}
 \end{table}
 
-\hyperref[predictionperformance]{Table} \ref{predictionperformance} displays all the evaluation metrics for the prediction of our method. The confidence intervals were calculated from the 11 different subsections that the experiment was performed on. Because the subsections have varying amounts of ditches in them, the confidence intervals will not be completely accurate, but will produce a close estimation.
-
-From \hyperref[predictionperformance]{Table} \ref{predictionperformance}, it is observed that averaging the results from the 11 subsections would yield a very similar value to the total results, indicating that the ditch detector generally performs equally well on subsections with a small amount of ditches as on subsections with a large amount of ditches.
+\hyperref[predictionperformance]{Table} \ref{predictionperformance} displays all the evaluation metrics for the prediction of our method. The confidence intervals were calculated from the 11 different subsections that the experiment was performed on. Because the subsections have varying amounts of ditches in them, the confidence intervals will not be completely accurate, but will produce a close estimation. Averaging the results from the 11 subsections would yield a very similar value to the total results, indicating that the ditch detector generally performs equally well on subsections with a small amount of ditches as on subsections with a large amount of ditches.
 
 \begin{table}[!htb]
 \centering
     {\begin{tabular}{l|ccc}
         \textbf{Metric} & \textbf{Total}\textsuperscript{a} & \textbf{Subsection Average}\textsuperscript{b}& \textbf{CI 95\%}\textsuperscript{c} \\ 
-        %&&\textbf{Average}&\\
         \hline
         Accuracy     \% & 99.00 & 99.00 & [98.69 , 99.32] \\
         Recall       \% & 70.28 & 70.19 & [61.28 , 79.09] \\
@@ -441,17 +438,17 @@ The $\kappa$ rating for our method can be seen in the \textit{Total} column in \
 
 \begin{figure} [!htb]
     a{
-        \resizebox*{4cm}{!}{\includegraphics{./images/results_illustration_1_lo.jpg}}}\hspace{5pt}
+        \resizebox*{5.3cm}{!}{\includegraphics{./images/results_illustration_1_lo.jpg}}}\hspace{5pt}
     b{
-        \resizebox*{4cm}{!}{\includegraphics{./images/results_illustration_2_lo.jpg}}}
+        \resizebox*{5.3cm}{!}{\includegraphics{./images/results_illustration_2_lo.jpg}}}
     \newline c{
-        \resizebox*{4cm}{!}{\includegraphics{./images/results_illustration_3_lo.jpg}}}\hspace{5pt}
+        \resizebox*{5.3cm}{!}{\includegraphics{./images/results_illustration_3_lo.jpg}}}\hspace{5pt}
     d{
-        \resizebox*{4cm}{!}{\includegraphics{./images/results_illustration_4_lo.jpg}}}
+        \resizebox*{5.3cm}{!}{\includegraphics{./images/results_illustration_4_lo.jpg}}}
     \newline e{
-        \resizebox*{4cm}{!}{\includegraphics{./images/results_illustration_5_lo.jpg}}}\hspace{5pt}
+        \resizebox*{5.3cm}{!}{\includegraphics{./images/results_illustration_5_lo.jpg}}}\hspace{5pt}
     f{
-        \resizebox*{4cm}{!}{\includegraphics{./images/results_illustration_6_lo.jpg}}}
+        \resizebox*{5.3cm}{!}{\includegraphics{./images/results_illustration_6_lo.jpg}}}
     \caption{The left panel shows the hillshade for a number of subsections, and the right panel shows the hillshade with the extracted ditches superimposed on top. Green marks correctly classified ditches (true positives), red marks missed ditches (false negatives), blue marks incorrectly classified ditches (false positives), and transparent areas mark correctly classified non-ditches (true negatives). \textbf{a} and \textbf{b} illustrate that the most common false positives were natural stream channels being classified as ditches. \textbf{c} and \textbf{d} illustrate that very shallow ditches that were barely visible in the DEM were not captured with our ditch detector. \textbf{e} and \textbf{f} illustrate that some of the deepest and more prominent ditches were also missed. This occurred as a result of attempting to get rid of more false positives in the form of streams by using the features, as explained in \ref{impoundmentstreamremoval}.}
     \label{fig:resultsillustrations}
 \end{figure}
